@@ -20,60 +20,67 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.edu.ifpr.cars.domain.Driver;
 import br.edu.ifpr.cars.domain.DriverRepository;
+import jakarta.validation.Valid;
 
 @Service
 @RestController
-@RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/drivers", produces = MediaType.APPLICATION_JSON_VALUE)
 public class DriverController {
 
-    @Autowired // injeção de dependência
-    DriverRepository driverRepository; // objeto instancia do repositorio
+    @Autowired
+    DriverRepository driverRepository;
 
-    @GetMapping("/drivers")
+    // 🔹 LISTAR TODOS
+    @GetMapping
     public List<Driver> listDrivers() {
         return driverRepository.findAll();
     }
 
-    // definir uma Exception personalizada
-    @GetMapping("/drivers/{id}")
+    // 🔹 BUSCAR POR ID
+    @GetMapping("/{id}")
     public Driver findDriver(@PathVariable("id") Long id) {
-        return driverRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return driverRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Motorista não encontrado."));
     }
 
-    @PostMapping("/drivers")
-    public Driver createDriver(@RequestBody Driver driver) {
+    // 🔹 CRIAR NOVO
+    @PostMapping
+    public Driver createDriver(@Valid @RequestBody Driver driver) {
         return driverRepository.save(driver);
     }
 
-    // update
-    @PutMapping("/drivers/{id}")
-    public Driver fullUpdateDriver(@PathVariable("id") Long id,
-            @RequestBody Driver driver) {
+    // 🔹 ATUALIZAR COMPLETAMENTE (PUT)
+    @PutMapping("/{id}")
+    public Driver fullUpdateDriver(@PathVariable("id") Long id, @Valid @RequestBody Driver driver) {
         Driver foundDriver = findDriver(id);
+
         foundDriver.setName(driver.getName());
+        foundDriver.setEmail(driver.getEmail());
+        foundDriver.setCpf(driver.getCpf());
         foundDriver.setBirthDate(driver.getBirthDate());
+
         return driverRepository.save(foundDriver);
     }
 
-    @PatchMapping("/drivers/{id}")
-    public Driver incrementalUpdateDriver(@PathVariable("id") Long id,
-            @RequestBody Driver driver){
-            Driver foundDriver = findDriver(id);
-            
-            foundDriver.setName(Optional.ofNullable(driver.getName())
-            .orElse(foundDriver.getName()));
+    // 🔹 ATUALIZAÇÃO PARCIAL (PATCH)
+    @PatchMapping("/{id}")
+    public Driver incrementalUpdateDriver(@PathVariable("id") Long id, @Valid @RequestBody Driver driver) {
+        Driver foundDriver = findDriver(id);
 
-            foundDriver.setBirthDate(Optional.ofNullable(driver.getBirthDate())
-            .orElse(foundDriver.getBirthDate()));
+        foundDriver.setName(Optional.ofNullable(driver.getName()).orElse(foundDriver.getName()));
+        foundDriver.setEmail(Optional.ofNullable(driver.getEmail()).orElse(foundDriver.getEmail()));
+        foundDriver.setCpf(Optional.ofNullable(driver.getCpf()).orElse(foundDriver.getCpf()));
+        foundDriver.setBirthDate(Optional.ofNullable(driver.getBirthDate()).orElse(foundDriver.getBirthDate()));
 
-            return driverRepository.save(foundDriver);
+        return driverRepository.save(foundDriver);
     }
 
-    @DeleteMapping("/drivers/{id}")
-    public void deleteDriver(@PathVariable("id") Long id){
+    // 🔹 DELETAR
+    @DeleteMapping("/{id}")
+    public void deleteDriver(@PathVariable("id") Long id) {
+        if (!driverRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Motorista não encontrado.");
+        }
         driverRepository.deleteById(id);
     }
-
-
 }
