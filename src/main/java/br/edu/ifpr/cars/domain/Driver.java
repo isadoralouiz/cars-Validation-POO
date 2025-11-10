@@ -2,6 +2,7 @@ package br.edu.ifpr.cars.domain;
 
 import java.time.LocalDate;
 
+import br.edu.ifpr.cars.validate.Impar;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,7 +17,8 @@ import lombok.Data;
 @Data
 public class Driver {
 
-    
+    @Impar
+    Integer num;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -42,3 +44,4 @@ public class Driver {
     
     
 }
+    
