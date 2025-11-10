@@ -16,6 +16,7 @@ import lombok.Data;
 @Data
 public class Driver {
 
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
@@ -38,4 +39,6 @@ public class Driver {
     String cpf;
 
     LocalDate birthDate;
+    
+    
 }
