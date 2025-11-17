@@ -2,7 +2,11 @@ package br.edu.ifpr.cars.domain;
 
 import java.time.LocalDate;
 
+import br.edu.ifpr.cars.validate.AnoCarro;
+import br.edu.ifpr.cars.validate.CNH;
+import br.edu.ifpr.cars.validate.Comentario;
 import br.edu.ifpr.cars.validate.Impar;
+import br.edu.ifpr.cars.validate.Placa;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,6 +29,17 @@ public class Driver {
     @Impar
     Integer numero;
 
-    
+    @Comentario
+    String comentario;
+
+    @Placa
+    String placa;
+
+    @NotBlank(message = "É necessário digitar uma CNH")
+    @CNH
+    String cnh;
+
+    @AnoCarro
+    Integer anoCarro;
 
 }
