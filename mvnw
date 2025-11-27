@@ -1,5 +1,11 @@
 #!/bin/sh
 # ----------------------------------------------------------------------------
+#!/bin/sh
+JAVA_HOME=${JAVA_HOME:-/usr/lib/jvm/default-java}
+WRAPPER_JAR="$(dirname "$0")/.mvn/wrapper/maven-wrapper.jar"
+WRAPPER_PROPERTIES="$(dirname "$0")/.mvn/wrapper/maven-wrapper.properties"
+
+java -classpath "$WRAPPER_JAR" -Dmaven.multiModuleProjectDirectory="$PWD" org.apache.maven.wrapper.MavenWrapperMain "$@"
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
